@@ -1,4 +1,4 @@
-package app.helloworld.controller;
+package app.smallbasicide.controller;
 
 
 import javafx.event.ActionEvent;
@@ -9,15 +9,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 
-public class HelloWorldController implements Initializable {
+public class IDEController implements Initializable {
 
     @FXML private MenuItem saveFile;
     @FXML private MenuItem run;

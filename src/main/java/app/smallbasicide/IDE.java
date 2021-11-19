@@ -1,6 +1,6 @@
-package app.helloworld;
+package app.smallbasicide;
 
-import app.helloworld.controller.HelloWorldController;
+import app.smallbasicide.controller.IDEController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,14 +10,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 
-public class HelloWorld extends Application {
+public class IDE extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/helloworld/view/HelloWorld.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/smallbasicide/view/IDE.fxml"));
         Parent root = fxmlLoader.load();
-        HelloWorldController controller = fxmlLoader.getController();
-        primaryStage.setTitle("Hello World");
+        IDEController controller = fxmlLoader.getController();
+        primaryStage.setTitle("Small Basic IDE");
         Scene sc = new Scene(root);
         sc.setOnKeyPressed(e -> {
             System.out.println("KEY PRESSED");
