@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.helloworld.controller.HelloWorldController">
+   <children>
+      <MenuBar prefHeight="29.0" prefWidth="300.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+               <MenuItem fx:id="saveFile" mnemonicParsing="false" onAction="#clickSave" text="Save" />
+               <MenuItem mnemonicParsing="false" onAction="#clickOpen" text="Open" />
+               <MenuItem mnemonicParsing="false" onAction="#clickSaveAs" text="Save As" />
+               <MenuItem fx:id="run" mnemonicParsing="false" onAction="#clickRun" text="Run" />
+            </items>
+          </Menu>
+<!--          <Menu mnemonicParsing="false" text="Edit">-->
+<!--            <items>-->
+<!--              <MenuItem mnemonicParsing="false" text="Delete" />-->
+<!--            </items>-->
+<!--          </Menu>-->
+<!--          <Menu mnemonicParsing="false" text="Help">-->
+<!--            <items>-->
+<!--              <MenuItem mnemonicParsing="false" text="About" />-->
+<!--            </items>-->
+<!--          </Menu>-->
+        </menus>
+      </MenuBar>
+      <TextArea fx:id="text" layoutY="28.0" prefHeight="272.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
+         <font>
+            <Font name="Monospaced Regular" size="13.0" />
+         </font></TextArea>
+      <Label fx:id="fileLabel" AnchorPane.rightAnchor="0.0" />
+   </children>
+</AnchorPane>
