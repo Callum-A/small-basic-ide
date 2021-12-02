@@ -112,12 +112,15 @@ public class IDEController implements Initializable {
         }
     }
 
-    public void setRunButtonDisabled(boolean disabled) {
-        run.setDisable(disabled);
+    public void programStarted() {
+        stop.setDisable(false);
+        run.setDisable(true);
     }
 
-    public void setStopButtonDisabled(boolean disabled) {
-        stop.setDisable(disabled);
+    public void programFinished() {
+        stop.setDisable(true);
+        run.setDisable(false);
+        currentProgramRunning = null;
     }
 
     public void clickStop(ActionEvent e) throws Exception {
