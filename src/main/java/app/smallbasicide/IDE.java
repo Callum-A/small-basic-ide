@@ -23,9 +23,5 @@ public class IDE extends Application {
         primaryStage.show();
     }
 
-    public void runOnF5(KeyEvent e) {
-
-    }
-
     public static void main(String[] args) { launch(args); }
 }

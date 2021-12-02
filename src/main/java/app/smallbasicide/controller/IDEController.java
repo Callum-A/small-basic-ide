@@ -8,11 +8,15 @@ import app.smallbasicide.util.Util;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -107,7 +111,18 @@ public class IDEController implements Initializable {
         // TODO: set debug and sym table mode in opts
         String cmd = CommandHandler.buildCommand(openFile, false, false);
         if (currentProgramRunning == null) {
-            currentProgramRunning = new StreamHandler(cmd, this);
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.NONE);
+            Stage stage = (Stage) ap.getScene().getWindow();
+            dialog.initOwner(stage);
+            TextArea ta = new TextArea("");
+            ta.setEditable(false);
+            ta.setFont(Font.font("Monospaced", 13));
+            Scene dialogScene = new Scene(ta, 600, 400);
+            dialog.setScene(dialogScene);
+            dialog.setTitle("Program Output");
+            dialog.show();
+            currentProgramRunning = new StreamHandler(cmd, this, ta);
             currentProgramRunning.start();
         }
     }
@@ -123,7 +138,7 @@ public class IDEController implements Initializable {
         currentProgramRunning = null;
     }
 
-    public void clickStop(ActionEvent e) throws Exception {
+    public void clickStop(ActionEvent e) {
         if (currentProgramRunning != null) {
             currentProgramRunning.stopProcess();
             currentProgramRunning = null;
