@@ -109,7 +109,7 @@ public class IDEController implements Initializable {
         // TODO: show pop up here
         clickSave(null);
         // TODO: set debug and sym table mode in opts
-        String cmd = CommandHandler.buildCommand(openFile, false, false);
+        String cmd = CommandHandler.buildCommand(openFile, true, true);
         if (currentProgramRunning == null) {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.NONE);
@@ -122,7 +122,7 @@ public class IDEController implements Initializable {
             dialog.setScene(dialogScene);
             dialog.setTitle("Program Output");
             dialog.show();
-            currentProgramRunning = new StreamHandler(cmd, this, ta);
+            currentProgramRunning = new StreamHandler(openFile, true, true, this, ta);
             currentProgramRunning.start();
         }
     }
@@ -143,5 +143,9 @@ public class IDEController implements Initializable {
             currentProgramRunning.stopProcess();
             currentProgramRunning = null;
         }
+    }
+
+    public void nextStmt(ActionEvent e) throws Exception {
+        currentProgramRunning.next();
     }
 }

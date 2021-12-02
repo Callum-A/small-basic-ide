@@ -15,6 +15,7 @@
                <MenuItem mnemonicParsing="false" onAction="#clickSaveAs" text="Save As" />
                <MenuItem fx:id="run" mnemonicParsing="false" onAction="#clickRun" text="Run" />
                <MenuItem fx:id="stop" mnemonicParsing="false" onAction="#clickStop" disable="true" text="Stop" />
+                <MenuItem mnemonicParsing="false" onAction="#nextStmt" disable="false" text="Next Statement" />
             </items>
           </Menu>
 <!--          <Menu mnemonicParsing="false" text="Edit">-->
