@@ -19,16 +19,6 @@ public class IDE extends Application {
         IDEController controller = fxmlLoader.getController();
         primaryStage.setTitle("Small Basic IDE");
         Scene sc = new Scene(root);
-        sc.setOnKeyPressed(e -> {
-            System.out.println("KEY PRESSED");
-            try {
-                if (e.getCode() == KeyCode.F5) {
-                    controller.clickRun(null);
-                }
-            } catch (Exception ex) {
-
-            }
-        });
         primaryStage.setScene(sc);
         primaryStage.show();
     }

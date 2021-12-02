@@ -1,48 +1,46 @@
 package app.smallbasicide.controller;
 
 
+import app.smallbasicide.util.CommandHandler;
+import app.smallbasicide.util.Config;
+import app.smallbasicide.util.StreamHandler;
+import app.smallbasicide.util.Util;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class IDEController implements Initializable {
 
     @FXML private MenuItem saveFile;
     @FXML private MenuItem run;
-    @FXML private TextArea text;
+    @FXML private MenuItem stop;
     @FXML private AnchorPane ap;
-    @FXML private Label fileLabel;
-
-    private File currentFile;
+    @FXML private TabPane tabs;
+    private final HashMap<Tab, File> tabToFileMap = new HashMap<>();
+    private StreamHandler currentProgramRunning;
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
     }
 
     public void clickSave(ActionEvent e) throws Exception {
-        Stage stage = (Stage) ap.getScene().getWindow();
-        FileChooser fc = new FileChooser();
-        File toSave = currentFile == null ? fc.showSaveDialog(stage) : currentFile;
+        Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
+        File toSave = tabToFileMap.get(selectedTab);
         if (toSave != null) {
-            FileWriter myWriter = new FileWriter(toSave.getAbsolutePath());
-            String t = text.getText();
-            if (!t.endsWith("\n")) {
-                t += "\n";
-            }
-            myWriter.write(t);
-            myWriter.close();
+            Util.writeFile(toSave, selectedTab);
             System.out.println("Saving file " + toSave.getAbsolutePath());
-            currentFile = toSave;
-            fileLabel.setText(currentFile.getName());
         } else {
             // TODO: show some error
         }
@@ -52,57 +50,80 @@ public class IDEController implements Initializable {
         Stage stage = (Stage) ap.getScene().getWindow();
         FileChooser fc = new FileChooser();
         File toSave = fc.showSaveDialog(stage);
+        Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
         if (toSave != null) {
-            FileWriter myWriter = new FileWriter(toSave.getAbsolutePath());
-            myWriter.write(text.getText());
-            myWriter.close();
+            Util.writeFile(toSave, selectedTab);
+            tabToFileMap.put(selectedTab, toSave);
+            selectedTab.setText(toSave.getName());
             System.out.println("Saving file as " + toSave.getAbsolutePath());
-            currentFile = toSave;
-            fileLabel.setText(currentFile.getName());
         }
     }
 
     public void clickOpen(ActionEvent e) throws Exception {
         Stage stage = (Stage) ap.getScene().getWindow();
+        // Open file selection dialog
         FileChooser fc = new FileChooser();
         File selected = fc.showOpenDialog(stage);
+        // If we have selected a file
         if (selected != null) {
-            FileInputStream fis = new FileInputStream(selected);
-            byte[] data = new byte[(int) selected.length()];
-            fis.read(data);
-            fis.close();
-            String contents = new String(data, StandardCharsets.UTF_8);
-            text.setText(contents);
-            currentFile = selected;
-            fileLabel.setText(currentFile.getName());
+            // Create a tab using the file
+            if (!isFileAlreadyOpen(selected)) {
+                Tab t = createFileTab(selected);
+                tabs.getTabs().add(t);
+                tabs.getSelectionModel().select(t);
+            }
         } else {
             // TODO: handle not selected file here
         }
     }
 
+    private boolean isFileAlreadyOpen(File file) {
+        for (File value : tabToFileMap.values()) {
+            if (file.getAbsolutePath().equals(value.getAbsolutePath())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Tab createFileTab(File file) throws Exception {
+        String contents = Util.readFile(file);
+        TextArea ta = new TextArea("");
+        ta.setFont(Font.font("Monospaced", 13));
+        ta.setText(contents);
+        Tab t = new Tab(file.getName(), ta);
+        t.setClosable(true);
+        tabToFileMap.put(t, file);
+        t.setOnClosed(evt -> tabToFileMap.remove(t));
+        return t;
+    }
+
     public void clickRun(ActionEvent e) throws Exception {
-        if (currentFile != null) {
-            Runtime rt = Runtime.getRuntime();
-            String cmd = "/Users/callumanderson/Documents/Programming/C++/small-basic/build/run.sh " + currentFile.getAbsolutePath();
-            System.out.println(cmd);
-            Process pr = rt.exec(cmd);
-            BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-            BufferedReader err = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
-            String line = null;
-            String out = "";
-            String error = "";
-            while((line = input.readLine()) != null) {
-                out += line + "\n";
-            }
-            line = null;
-            while ((line = err.readLine()) != null) {
-                error += line + "\n";
-            }
-            int exitVal = pr.waitFor();
-            System.out.println(out);
-            if (exitVal != 0) {
-                System.out.println(error);
-            }
+        Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
+        File openFile = tabToFileMap.get(selectedTab);
+        // Ensure the file is up to date
+        // TODO: show pop up here
+        clickSave(null);
+        // TODO: set debug and sym table mode in opts
+        String cmd = CommandHandler.buildCommand(openFile, false, false);
+        if (currentProgramRunning == null) {
+            currentProgramRunning = new StreamHandler(cmd, this);
+            currentProgramRunning.start();
+        }
+    }
+
+    public void setRunButtonDisabled(boolean disabled) {
+        run.setDisable(disabled);
+    }
+
+    public void setStopButtonDisabled(boolean disabled) {
+        stop.setDisable(disabled);
+    }
+
+    public void clickStop(ActionEvent e) throws Exception {
+        if (currentProgramRunning != null) {
+            currentProgramRunning.stopProcess();
+            currentProgramRunning = null;
         }
     }
 }
