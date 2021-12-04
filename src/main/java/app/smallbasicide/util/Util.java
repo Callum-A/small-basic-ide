@@ -10,7 +10,6 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 
 public class Util {
-    public static boolean isProgramRunning = false;
     public static String readFile(File file) throws Exception {
         FileInputStream fis = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];
