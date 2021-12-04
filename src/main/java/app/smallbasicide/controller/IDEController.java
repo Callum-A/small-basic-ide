@@ -7,8 +7,10 @@ import app.smallbasicide.util.StreamHandler;
 import app.smallbasicide.util.Util;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -29,11 +31,9 @@ public class IDEController implements Initializable {
 
     @FXML private MenuItem saveFile;
     @FXML private MenuItem run;
-    @FXML private MenuItem stop;
     @FXML private AnchorPane ap;
     @FXML private TabPane tabs;
     private final HashMap<Tab, File> tabToFileMap = new HashMap<>();
-    private StreamHandler currentProgramRunning;
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
@@ -109,43 +109,17 @@ public class IDEController implements Initializable {
         // TODO: show pop up here
         clickSave(null);
         // TODO: set debug and sym table mode in opts
-        String cmd = CommandHandler.buildCommand(openFile, true, true);
-        if (currentProgramRunning == null) {
-            final Stage dialog = new Stage();
-            dialog.initModality(Modality.NONE);
-            Stage stage = (Stage) ap.getScene().getWindow();
-            dialog.initOwner(stage);
-            TextArea ta = new TextArea("");
-            ta.setEditable(false);
-            ta.setFont(Font.font("Monospaced", 13));
-            Scene dialogScene = new Scene(ta, 600, 400);
-            dialog.setScene(dialogScene);
-            dialog.setTitle("Program Output");
-            dialog.show();
-            currentProgramRunning = new StreamHandler(openFile, true, true, this, ta);
-            currentProgramRunning.start();
-        }
-    }
-
-    public void programStarted() {
-        stop.setDisable(false);
-        run.setDisable(true);
-    }
-
-    public void programFinished() {
-        stop.setDisable(true);
-        run.setDisable(false);
-        currentProgramRunning = null;
-    }
-
-    public void clickStop(ActionEvent e) {
-        if (currentProgramRunning != null) {
-            currentProgramRunning.stopProcess();
-            currentProgramRunning = null;
-        }
-    }
-
-    public void nextStmt(ActionEvent e) throws Exception {
-        currentProgramRunning.next();
+        // Pop up terminal dialog
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/smallbasicide/view/Terminal.fxml"));
+        Parent parent = fxmlLoader.load();
+        TerminalController terminalController = fxmlLoader.getController();
+        Scene scene = new Scene(parent, 300, 200);
+        Stage dialog = new Stage();
+        Stage parentStage = (Stage) ap.getScene().getWindow();
+        dialog.initModality(Modality.NONE);
+        dialog.setScene(scene);
+        dialog.initOwner(parentStage);
+        dialog.show();
+        terminalController.startProgram(openFile, false, false);
     }
 }
