@@ -1,0 +1,5 @@
+.keyword {
+    -fx-fill: purple;
+    -fx-text-fill: purple;
+    -fx-font-weight: bold;
+}

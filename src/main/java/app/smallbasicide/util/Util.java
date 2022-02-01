@@ -3,6 +3,7 @@ package app.smallbasicide.util;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
+import org.fxmisc.richtext.CodeArea;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +21,7 @@ public class Util {
     }
 
     public static void writeFile(File file, Tab toWrite) throws Exception {
-        TextArea content = (TextArea) toWrite.getContent();
+        CodeArea content = (CodeArea) toWrite.getContent();
         String text = content.getText();
         if (!text.endsWith("\n")) {
             text += "\n";

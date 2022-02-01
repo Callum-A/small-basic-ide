@@ -1,10 +1,7 @@
 package app.smallbasicide.controller;
 
-
-import app.smallbasicide.util.CommandHandler;
-import app.smallbasicide.util.Config;
-import app.smallbasicide.util.StreamHandler;
-import app.smallbasicide.util.Util;
+import app.smallbasicide.IDE;
+import app.smallbasicide.util.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,10 +17,13 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.fxmisc.richtext.CodeArea;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -92,9 +92,9 @@ public class IDEController implements Initializable {
 
     private Tab createFileTab(File file) throws Exception {
         String contents = Util.readFile(file);
-        TextArea ta = new TextArea("");
-        ta.setFont(Font.font("Monospaced", 13));
-        ta.setText(contents);
+        CodeArea ta = new CodeArea(contents);
+        ta.getStylesheets().add(getClass().getResource("/app/smallbasicide/view/style/keywords.css").toURI().toString());
+        new SmallBasicHighlight(ta).highlight();
         Tab t = new Tab(file.getName(), ta);
         t.setClosable(true);
         tabToFileMap.put(t, file);
@@ -120,6 +120,6 @@ public class IDEController implements Initializable {
         dialog.setScene(scene);
         dialog.initOwner(parentStage);
         dialog.show();
-        terminalController.startProgram(openFile, false, false);
+        terminalController.startProgram(openFile, true, true);
     }
 }
