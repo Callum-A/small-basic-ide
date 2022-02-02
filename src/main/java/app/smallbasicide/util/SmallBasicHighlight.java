@@ -62,7 +62,8 @@ public class SmallBasicHighlight extends Highlight {
         List<String> keywordsList = Arrays.asList(
                 "For", "Let", "If", "EndIf", "While",
                 "EndFor", "Sub", "EndSub", "True",
-                "False", "Else", "To", "Step", "EndWhile"
+                "False", "Else", "To", "Step", "EndWhile",
+                "Then", "Print", "Do"
         );
         try (final Stream<String> lines = keywordsList.stream()) {
             final String keywords = lines.collect(Collectors.joining("|"));
