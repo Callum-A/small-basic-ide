@@ -26,11 +26,12 @@ public class TerminalController implements Initializable {
         symbol.setFont(Font.font("Monospaced", 13));
     }
 
-    public void startProgram(File file, boolean debugMode, boolean symbolMode) {
-        if (!debugMode) {
+    public void startProgram(File file, boolean debugMode, boolean symbolMode, int breakpoint) {
+        System.out.println(breakpoint);
+        if (!debugMode && breakpoint < 1) {
             nextButton.setDisable(true);
         }
-        currentProgramRunning = new StreamHandler(file, debugMode, symbolMode, this, output, symbol);
+        currentProgramRunning = new StreamHandler(file, debugMode, symbolMode, breakpoint, this, output, symbol);
         currentProgramRunning.start();
     }
 
@@ -44,6 +45,7 @@ public class TerminalController implements Initializable {
 
     public void clickNext(ActionEvent e) throws Exception {
         boolean isFinished = currentProgramRunning.next();
+        System.out.println(isFinished);
         if (isFinished) {
             stopButton.setDisable(true);
             nextButton.setDisable(true);

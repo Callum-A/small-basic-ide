@@ -14,6 +14,8 @@
                <MenuItem mnemonicParsing="false" onAction="#clickOpen" text="Open" />
                <MenuItem mnemonicParsing="false" onAction="#clickSaveAs" text="Save As" />
                <MenuItem fx:id="run" mnemonicParsing="false" onAction="#clickRun" text="Run" />
+                <MenuItem fx:id="runDebug" mnemonicParsing="false" onAction="#clickDebugRun" text="Debug Run" />
+                <MenuItem fx:id="breakpointMenuItem" mnemonicParsing="false" onAction="#clickBreakpointMenuItem" text="Set Breakpoint" />
             </items>
           </Menu>
 <!--          <Menu mnemonicParsing="false" text="Edit">-->
@@ -28,6 +30,7 @@
 <!--          </Menu>-->
         </menus>
       </MenuBar>
+
        <TabPane fx:id="tabs" prefHeight="30.0" prefWidth="300.0" tabClosingPolicy="SELECTED_TAB" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
            <tabs>
            </tabs>

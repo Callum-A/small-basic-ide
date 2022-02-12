@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.IntFunction;
 
@@ -39,6 +40,11 @@ public class IDEController implements Initializable {
     @FXML private AnchorPane ap;
     @FXML private TabPane tabs;
     private final HashMap<Tab, File> tabToFileMap = new HashMap<>();
+    private int breakpoint = -1;
+
+    public void setBreakpoint(int breakpoint) {
+        this.breakpoint = breakpoint;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
@@ -85,6 +91,23 @@ public class IDEController implements Initializable {
             // TODO: handle not selected file here
         }
     }
+    public void clickBreakpointMenuItem(ActionEvent e) throws Exception {
+        TextInputDialog input = new TextInputDialog(breakpoint + "");
+        input.setTitle("Enter breakpoint line number");
+        input.setHeaderText("Enter breakpoint line number");
+        Optional<String> bp = input.showAndWait();
+        if (bp.isPresent()) {
+            String unparsed = bp.get();
+            int newBreakpoint = breakpoint;
+            try {
+                newBreakpoint = Integer.parseInt(unparsed);
+            } catch (Exception ignored) {}
+            breakpoint = newBreakpoint;
+            Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
+            CodeArea ca = (CodeArea) selectedTab.getContent();
+            ca.setParagraphGraphicFactory(HBoxFactory.buildSideBars(ca, breakpoint - 1));
+        }
+    }
 
     private boolean isFileAlreadyOpen(File file) {
         for (File value : tabToFileMap.values()) {
@@ -99,14 +122,7 @@ public class IDEController implements Initializable {
         String contents = Util.readFile(file);
         CodeArea ta = new CodeArea(contents);
         ta.setStyle("-fx-font-size: 1em; -fx-font-weight: bold;");
-        IntFunction<Node> numberFactory = LineNumberFactory.get(ta);
-        IntFunction<Node> graphicFactory = line -> {
-            HBox hbox = new HBox(numberFactory.apply(line));
-            hbox.setAlignment(Pos.CENTER_LEFT);
-            hbox.setStyle("-fx-font-size: 1em");
-            return hbox;
-        };
-        ta.setParagraphGraphicFactory(graphicFactory);
+        ta.setParagraphGraphicFactory(HBoxFactory.buildSideBars(ta, breakpoint));
         ta.getStylesheets().add(getClass().getResource("/app/smallbasicide/view/style/keywords.css").toURI().toString());
         Subscription sub = new SmallBasicHighlight(ta).highlight();
         Tab t = new Tab(file.getName(), ta);
@@ -119,14 +135,27 @@ public class IDEController implements Initializable {
         return t;
     }
 
+    public void clickDebugRun(ActionEvent e) throws Exception {
+        Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
+        File openFile = tabToFileMap.get(selectedTab);
+        // Ensure the file is up to date
+        // TODO: show pop up here
+        clickSave(null);
+        // Pop up terminal dialog
+        run(openFile, true, true, breakpoint);
+    }
+
     public void clickRun(ActionEvent e) throws Exception {
         Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
         File openFile = tabToFileMap.get(selectedTab);
         // Ensure the file is up to date
         // TODO: show pop up here
         clickSave(null);
-        // TODO: set debug and sym table mode in opts
         // Pop up terminal dialog
+        run(openFile, false, false, -1);
+    }
+
+    public void run(File file, boolean debugMode, boolean symbolMode, int breakpoint) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/smallbasicide/view/Terminal.fxml"));
         Parent parent = fxmlLoader.load();
         TerminalController terminalController = fxmlLoader.getController();
@@ -137,6 +166,6 @@ public class IDEController implements Initializable {
         dialog.setScene(scene);
         dialog.initOwner(parentStage);
         dialog.show();
-        terminalController.startProgram(openFile, true, true);
+        terminalController.startProgram(file, debugMode, symbolMode, breakpoint);
     }
 }

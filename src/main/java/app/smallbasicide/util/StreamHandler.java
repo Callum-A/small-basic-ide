@@ -18,9 +18,9 @@ public class StreamHandler extends Thread {
     private String fullOutput;
     private String currentSymbolTable;
 
-    public StreamHandler(File file, boolean debugMode, boolean outputSymbolTable, TerminalController controller, TextArea ta, TextArea symTa) {
+    public StreamHandler(File file, boolean debugMode, boolean outputSymbolTable, int breakpoint, TerminalController controller, TextArea ta, TextArea symTa) {
         this.debugMode = debugMode;
-        this.cmd = CommandHandler.buildCommand(file, debugMode, outputSymbolTable);
+        this.cmd = CommandHandler.buildCommand(file, debugMode, outputSymbolTable, breakpoint);
         this.controller = controller;
         this.ta = ta;
         this.fullOutput = "";
@@ -49,7 +49,7 @@ public class StreamHandler extends Thread {
                 pr = rt.exec(cmd);
                 input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
                 writer = new BufferedWriter(new OutputStreamWriter(pr.getOutputStream()));
-                // Waits for user to call next()
+                next();
             }
         } catch (Exception e) {
             System.out.println("EXCEPTION: " + e);
@@ -63,6 +63,7 @@ public class StreamHandler extends Thread {
             String tempOutput = "";
             System.out.println("setting output");
             while (!(line = input.readLine()).endsWith("-- Symbol Table End --")) {
+                System.out.println(line);
                 tempOutput += line + "\n";
             }
             tempOutput += line + "\n"; // Get the symbol table end lines
