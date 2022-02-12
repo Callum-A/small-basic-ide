@@ -17,6 +17,7 @@ public class TerminalController implements Initializable {
     @FXML private TextArea symbol;
     @FXML private Button stopButton;
     @FXML private Button nextButton;
+    @FXML private Button runUntilEnd;
 
     private StreamHandler currentProgramRunning;
 
@@ -27,7 +28,6 @@ public class TerminalController implements Initializable {
     }
 
     public void startProgram(File file, boolean debugMode, boolean symbolMode, int breakpoint) {
-        System.out.println(breakpoint);
         if (!debugMode && breakpoint < 1) {
             nextButton.setDisable(true);
         }
@@ -40,6 +40,8 @@ public class TerminalController implements Initializable {
             currentProgramRunning.stopProcess();
             currentProgramRunning = null;
             stopButton.setDisable(true);
+            nextButton.setDisable(true);
+            runUntilEnd.setDisable(true);
         }
     }
 
@@ -49,6 +51,19 @@ public class TerminalController implements Initializable {
         if (isFinished) {
             stopButton.setDisable(true);
             nextButton.setDisable(true);
+            runUntilEnd.setDisable(true);
         }
+    }
+
+    public void clickRunUntilEnd(ActionEvent e) throws Exception {
+        boolean isFinished = true;
+        do {
+            try {
+                isFinished = currentProgramRunning.next();
+            } catch (Exception ignored) {}
+        } while (!isFinished);
+        stopButton.setDisable(true);
+        nextButton.setDisable(true);
+        runUntilEnd.setDisable(true);
     }
 }

@@ -59,11 +59,10 @@ public class StreamHandler extends Thread {
     public boolean next() throws Exception {
         if (pr.isAlive()) {
             System.out.println("is alive");
-            String line;
+            String line = "";
             String tempOutput = "";
             System.out.println("setting output");
             while (!(line = input.readLine()).endsWith("-- Symbol Table End --")) {
-                System.out.println(line);
                 tempOutput += line + "\n";
             }
             tempOutput += line + "\n"; // Get the symbol table end lines
