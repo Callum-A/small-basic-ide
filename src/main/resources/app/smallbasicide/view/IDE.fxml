@@ -14,20 +14,8 @@
                <MenuItem mnemonicParsing="false" onAction="#clickOpen" text="Open" />
                <MenuItem mnemonicParsing="false" onAction="#clickSaveAs" text="Save As" />
                <MenuItem fx:id="run" mnemonicParsing="false" onAction="#clickRun" text="Run" />
-                <MenuItem fx:id="runDebug" mnemonicParsing="false" onAction="#clickDebugRun" text="Debug Run" />
-                <MenuItem fx:id="breakpointMenuItem" mnemonicParsing="false" onAction="#clickBreakpointMenuItem" text="Set Breakpoint" />
             </items>
           </Menu>
-<!--          <Menu mnemonicParsing="false" text="Edit">-->
-<!--            <items>-->
-<!--              <MenuItem mnemonicParsing="false" text="Delete" />-->
-<!--            </items>-->
-<!--          </Menu>-->
-<!--          <Menu mnemonicParsing="false" text="Help">-->
-<!--            <items>-->
-<!--              <MenuItem mnemonicParsing="false" text="About" />-->
-<!--            </items>-->
-<!--          </Menu>-->
         </menus>
       </MenuBar>
 

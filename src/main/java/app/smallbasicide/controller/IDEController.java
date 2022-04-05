@@ -42,10 +42,6 @@ public class IDEController implements Initializable {
     private final HashMap<Tab, File> tabToFileMap = new HashMap<>();
     private int breakpoint = -1;
 
-    public void setBreakpoint(int breakpoint) {
-        this.breakpoint = breakpoint;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
     }
@@ -91,23 +87,6 @@ public class IDEController implements Initializable {
             // TODO: handle not selected file here
         }
     }
-    public void clickBreakpointMenuItem(ActionEvent e) throws Exception {
-        TextInputDialog input = new TextInputDialog(breakpoint + "");
-        input.setTitle("Enter breakpoint line number");
-        input.setHeaderText("Enter breakpoint line number");
-        Optional<String> bp = input.showAndWait();
-        if (bp.isPresent()) {
-            String unparsed = bp.get();
-            int newBreakpoint = breakpoint;
-            try {
-                newBreakpoint = Integer.parseInt(unparsed);
-            } catch (Exception ignored) {}
-            breakpoint = newBreakpoint;
-            Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
-            CodeArea ca = (CodeArea) selectedTab.getContent();
-            ca.setParagraphGraphicFactory(HBoxFactory.buildSideBars(ca, breakpoint - 1));
-        }
-    }
 
     private boolean isFileAlreadyOpen(File file) {
         for (File value : tabToFileMap.values()) {
@@ -133,16 +112,6 @@ public class IDEController implements Initializable {
             sub.unsubscribe();
         });
         return t;
-    }
-
-    public void clickDebugRun(ActionEvent e) throws Exception {
-        Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
-        File openFile = tabToFileMap.get(selectedTab);
-        // Ensure the file is up to date
-        // TODO: show pop up here
-        clickSave(null);
-        // Pop up terminal dialog
-        run(openFile, true, true, breakpoint);
     }
 
     public void clickRun(ActionEvent e) throws Exception {
