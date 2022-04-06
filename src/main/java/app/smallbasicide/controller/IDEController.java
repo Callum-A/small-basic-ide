@@ -27,6 +27,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Optional;
@@ -44,6 +45,14 @@ public class IDEController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {}
+
+    public void clickNew(ActionEvent e) throws Exception {
+        File tempFile = File.createTempFile("Untitled", ".sb");
+        tempFile.deleteOnExit();
+        Tab t = createFileTab(tempFile);
+        tabs.getTabs().add(t);
+        tabs.getSelectionModel().select(t);
+    }
 
     public void clickSave(ActionEvent e) throws Exception {
         Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
