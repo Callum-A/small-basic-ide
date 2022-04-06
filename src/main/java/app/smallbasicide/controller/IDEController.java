@@ -43,8 +43,7 @@ public class IDEController implements Initializable {
     private int breakpoint = -1;
 
     @Override
-    public void initialize(URL location, ResourceBundle resourceBundle) {
-    }
+    public void initialize(URL location, ResourceBundle resourceBundle) {}
 
     public void clickSave(ActionEvent e) throws Exception {
         Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
@@ -52,16 +51,23 @@ public class IDEController implements Initializable {
         if (toSave != null) {
             Util.writeFile(toSave, selectedTab);
             System.out.println("Saving file " + toSave.getAbsolutePath());
-        } else {
-            // TODO: show some error
         }
     }
 
     public void clickSaveAs(ActionEvent e) throws Exception {
         Stage stage = (Stage) ap.getScene().getWindow();
+        Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
+        if (selectedTab == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("File not selected");
+            alert.setContentText("You did not select a file!");
+            alert.showAndWait();
+            return;
+        }
+
         FileChooser fc = new FileChooser();
         File toSave = fc.showSaveDialog(stage);
-        Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
         if (toSave != null) {
             Util.writeFile(toSave, selectedTab);
             tabToFileMap.put(selectedTab, toSave);
@@ -84,7 +90,11 @@ public class IDEController implements Initializable {
                 tabs.getSelectionModel().select(t);
             }
         } else {
-            // TODO: handle not selected file here
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("File not selected");
+            alert.setContentText("You did not select a file!");
+            alert.showAndWait();
         }
     }
 
@@ -117,11 +127,25 @@ public class IDEController implements Initializable {
     public void clickRun(ActionEvent e) throws Exception {
         Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
         File openFile = tabToFileMap.get(selectedTab);
+        if (openFile == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("No open file");
+            alert.setContentText("You did not select a file!");
+            alert.showAndWait();
+            return;
+        }
+
         // Ensure the file is up to date
-        // TODO: show pop up here
-        clickSave(null);
-        // Pop up terminal dialog
-        run(openFile, false, false, -1);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Save?");
+        alert.setHeaderText("Save " + openFile.getName() + "?");
+        alert.setContentText("In order to run " + openFile.getName() + " it must be saved first. Continue?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            clickSave(null);
+            run(openFile, false, false, -1);
+        }
     }
 
     public void run(File file, boolean debugMode, boolean symbolMode, int breakpoint) throws Exception {
