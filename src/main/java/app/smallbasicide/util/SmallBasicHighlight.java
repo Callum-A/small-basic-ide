@@ -17,7 +17,7 @@ public class SmallBasicHighlight extends Highlight {
     private static final String BRACKET_PATTERN   = "\\[|\\]";
     private static final String SEMICOLON_PATTERN = "\\;";
     private static final String STRING_PATTERN    = "\"([^\"\\\\]|\\\\.)*\"";
-    private static final String COMMENT_PATTERN   = "//[^\n]*" + "|" + "/\\*(.|\\R)*?\\*/";
+    private static final String COMMENT_PATTERN   = "'[^\n]*";
 
     private Pattern pattern;
 

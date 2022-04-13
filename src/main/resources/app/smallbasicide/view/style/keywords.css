@@ -2,3 +2,28 @@
     -fx-fill: purple;
     -fx-text-fill: purple;
 }
+
+.comment {
+    -fx-fill: green;
+    -fx-text-fill: green;
+}
+
+.string {
+    -fx-fill: green;
+    -fx-text-fill: green;
+}
+
+.paren {
+    -fx-fill: blue;
+    -fx-text-fill: blue;
+}
+
+.brace {
+    -fx-fill: blue;
+    -fx-text-fill: blue;
+}
+
+.bracket {
+    -fx-fill: blue;
+    -fx-text-fill: blue;
+}
