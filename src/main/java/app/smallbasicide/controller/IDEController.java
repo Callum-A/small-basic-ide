@@ -170,4 +170,31 @@ public class IDEController implements Initializable {
         dialog.show();
         terminalController.startProgram(file, debugMode, symbolMode, breakpoint);
     }
+
+    public void clickUpdateCompiler(ActionEvent e) throws Exception {
+        TextInputDialog dialog = new TextInputDialog(Config.PATH_TO_COMPILER);
+        dialog.setTitle("Update Compiler");
+        dialog.setHeaderText("Update path to the compiler");
+
+        Optional<String> value = dialog.showAndWait();
+        String v = value.get();
+        if (v.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Must set a compiler path");
+            alert.setContentText("You did not set a compiler path!");
+            alert.showAndWait();
+            return;
+        }
+        File f = new File(v);
+        if (f.exists() && !f.isDirectory()) {
+            Config.PATH_TO_COMPILER = v;
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Compiler file does not exist");
+            alert.setContentText("The specified file path does not exist!");
+            alert.showAndWait();
+        }
+    }
 }
