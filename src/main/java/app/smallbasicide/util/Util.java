@@ -1,8 +1,6 @@
 package app.smallbasicide.util;
 
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
-import javafx.scene.text.Font;
 import org.fxmisc.richtext.CodeArea;
 
 import java.io.File;
@@ -10,7 +8,13 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Helper class containing some common utility functions.
+ */
 public class Util {
+    /**
+     * Read a given file into a string.
+     */
     public static String readFile(File file) throws Exception {
         FileInputStream fis = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];
@@ -20,6 +24,9 @@ public class Util {
         return contents;
     }
 
+    /**
+     * Write a given tab to a given file.
+     */
     public static void writeFile(File file, Tab toWrite) throws Exception {
         CodeArea content = (CodeArea) toWrite.getContent();
         String text = content.getText();

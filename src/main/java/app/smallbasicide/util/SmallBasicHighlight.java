@@ -10,14 +10,18 @@ import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
+/**
+ * Class handling highlighting for Small Basic code.
+ * Adapted from: https://github.com/FXMisc/RichTextFX#automatic-highlighting-of-java-keywords
+ */
 public class SmallBasicHighlight extends Highlight {
 
-    private static final String PAREN_PATTERN     = "\\(|\\)";
-    private static final String BRACE_PATTERN     = "\\{|\\}";
-    private static final String BRACKET_PATTERN   = "\\[|\\]";
-    private static final String SEMICOLON_PATTERN = "\\;";
-    private static final String STRING_PATTERN    = "\"([^\"\\\\]|\\\\.)*\"";
-    private static final String COMMENT_PATTERN   = "'[^\n]*";
+    private static final String PAREN_PATTERN     = "\\(|\\)";                // Paren regex
+    private static final String BRACE_PATTERN     = "\\{|\\}";                // Brace regex
+    private static final String BRACKET_PATTERN   = "\\[|\\]";                // Square bracket regex
+    private static final String SEMICOLON_PATTERN = "\\;";                    // Semicolon regex, not used
+    private static final String STRING_PATTERN    = "\"([^\"\\\\]|\\\\.)*\""; // String regex
+    private static final String COMMENT_PATTERN   = "'[^\n]*";                // Comment regex
 
     private Pattern pattern;
 
@@ -29,6 +33,9 @@ public class SmallBasicHighlight extends Highlight {
         super(codeArea);
     }
 
+    /**
+     * Do the highlighting on a given text.
+     */
     @Override
     protected StyleSpans<Collection<String>> computeHighlighting(final String text) {
         if (pattern == null) {
@@ -59,6 +66,7 @@ public class SmallBasicHighlight extends Highlight {
      * Make keyword pattern.
      */
     private void makePattern() {
+        // Keywords to highlight
         List<String> keywordsList = Arrays.asList(
                 "For", "Let", "If", "EndIf", "While",
                 "EndFor", "Sub", "EndSub", "True",

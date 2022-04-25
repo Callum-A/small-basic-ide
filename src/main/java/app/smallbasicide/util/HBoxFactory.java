@@ -9,11 +9,17 @@ import javafx.scene.layout.HBox;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
-import java.util.ArrayList;
 import java.util.function.IntFunction;
 
+/**
+ * Class building the HBox to the left of lines to show line numbers
+ * and breakpoints.
+ */
 public class HBoxFactory {
 
+    /**
+     * Build the sidebar showing line numbers and breakpoints.
+     */
     public static IntFunction<Node> buildSideBars(CodeArea ta, int breakpoint) {
         IntFunction<Node> numberFactory = LineNumberFactory.get(ta);
         IntFunction<Node> graphicFactory = line -> {

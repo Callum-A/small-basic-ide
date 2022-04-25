@@ -12,6 +12,10 @@ import org.reactfx.Subscription;
 
 import javafx.concurrent.Task;
 
+/**
+ * Abstract class to enable highlighting for a given code area.
+ * Adapted from: https://github.com/FXMisc/RichTextFX#automatic-highlighting-of-java-keywords
+ */
 public abstract class Highlight {
 
     /** Target CodeArea. */

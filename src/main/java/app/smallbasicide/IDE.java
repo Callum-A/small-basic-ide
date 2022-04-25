@@ -5,13 +5,14 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 
 public class IDE extends Application {
 
+    /**
+     * Start the primary stage. Loads the IDE window.
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/smallbasicide/view/IDE.fxml"));
@@ -23,5 +24,8 @@ public class IDE extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Program entry point.
+     */
     public static void main(String[] args) { launch(args); }
 }

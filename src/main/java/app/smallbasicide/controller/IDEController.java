@@ -1,51 +1,47 @@
 package app.smallbasicide.controller;
 
-import app.smallbasicide.IDE;
 import app.smallbasicide.util.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.LineNumberFactory;
 import org.reactfx.Subscription;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.IntFunction;
 
+/**
+ * Class binding to the IDE.fxml file. Handles all operations for the main editor window.
+ */
 public class IDEController implements Initializable {
+    @FXML private MenuItem saveFile;              // The save file button
+    @FXML private MenuItem run;                   // The run button
+    @FXML private AnchorPane ap;                  // The anchor pane (used to get the scene)
+    @FXML private TabPane tabs;                   // The tabs pane
+    private final HashMap<Tab, File> tabToFileMap // Map of tabs to files
+            = new HashMap<>();
+    private int breakpoint = -1;                  // Current set breakpoint
 
-    @FXML private MenuItem saveFile;
-    @FXML private MenuItem run;
-    @FXML private AnchorPane ap;
-    @FXML private TabPane tabs;
-    private final HashMap<Tab, File> tabToFileMap = new HashMap<>();
-    private int breakpoint = -1;
-
+    /**
+     * Initialise the IDE window.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {}
 
+    /**
+     * Handler for clicking the new file button. Creates a temp file and opens it.
+     */
     public void clickNew(ActionEvent e) throws Exception {
         File tempFile = File.createTempFile("Untitled", ".sb");
         tempFile.deleteOnExit();
@@ -54,6 +50,9 @@ public class IDEController implements Initializable {
         tabs.getSelectionModel().select(t);
     }
 
+    /**
+     * Handler for clicking the save button. Saves the file if one is open.
+     */
     public void clickSave(ActionEvent e) throws Exception {
         Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
         File toSave = tabToFileMap.get(selectedTab);
@@ -63,6 +62,10 @@ public class IDEController implements Initializable {
         }
     }
 
+    /**
+     * Handler for clicking the save as button. Saves the file in the specified
+     * location. Uses the OS' native file explorer.
+     */
     public void clickSaveAs(ActionEvent e) throws Exception {
         Stage stage = (Stage) ap.getScene().getWindow();
         Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
@@ -85,6 +88,10 @@ public class IDEController implements Initializable {
         }
     }
 
+    /**
+     * Handler for clicking the open file button. Uses the OS' native file explorer.
+     * Adds a tab and opens the file and reads the content.
+     */
     public void clickOpen(ActionEvent e) throws Exception {
         Stage stage = (Stage) ap.getScene().getWindow();
         // Open file selection dialog
@@ -107,6 +114,10 @@ public class IDEController implements Initializable {
         }
     }
 
+    /**
+     * Helper to check if a file is already open, AKA it already has a tab open.
+     * Returns true if the tab is already present.
+     */
     private boolean isFileAlreadyOpen(File file) {
         for (File value : tabToFileMap.values()) {
             if (file.getAbsolutePath().equals(value.getAbsolutePath())) {
@@ -116,6 +127,10 @@ public class IDEController implements Initializable {
         return false;
     }
 
+    /**
+     * Helper to create a file tab, reads the file, sets up the text area and highlighting,
+     * sets up tab on closed events.
+     */
     private Tab createFileTab(File file) throws Exception {
         String contents = Util.readFile(file);
         CodeArea ta = new CodeArea(contents);
@@ -133,6 +148,9 @@ public class IDEController implements Initializable {
         return t;
     }
 
+    /**
+     * Handler for clicking the run button for the open file. Calls the run hander.
+     */
     public void clickRun(ActionEvent e) throws Exception {
         Tab selectedTab = tabs.getSelectionModel().getSelectedItem();
         File openFile = tabToFileMap.get(selectedTab);
@@ -157,6 +175,11 @@ public class IDEController implements Initializable {
         }
     }
 
+    /**
+     * Helper to run a given a file, allows setting of the sufficient flags.
+     * Allows users to specify if they can run in debug mode, or symbol mode.
+     * Opens the terminal controller scene.
+     */
     public void run(File file, boolean debugMode, boolean symbolMode, int breakpoint) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/smallbasicide/view/Terminal.fxml"));
         Parent parent = fxmlLoader.load();
@@ -171,6 +194,10 @@ public class IDEController implements Initializable {
         terminalController.startProgram(file, debugMode, symbolMode, breakpoint);
     }
 
+    /**
+     * Handler for clicking the update compiler path button. Opens a pop up so
+     * users can write the path to the compiler.
+     */
     public void clickUpdateCompiler(ActionEvent e) throws Exception {
         TextInputDialog dialog = new TextInputDialog(Config.PATH_TO_COMPILER);
         dialog.setTitle("Update Compiler");

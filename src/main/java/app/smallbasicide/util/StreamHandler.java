@@ -1,25 +1,31 @@
 package app.smallbasicide.util;
 
-import app.smallbasicide.controller.IDEController;
 import app.smallbasicide.controller.TerminalController;
 import javafx.scene.control.TextArea;
 
 import java.io.*;
 
+/**
+ * Helper thread to handle live I/O stream from the running program.
+ */
 public class StreamHandler extends Thread {
-    private String cmd;
-    private TerminalController controller;
-    private Process pr;
-    private TextArea ta;
-    private TextArea symTa;
-    private BufferedWriter writer;
-    private BufferedReader input;
-    private BufferedReader error;
-    private boolean debugMode;
-    private String fullOutput;
-    private String currentSymbolTable;
+    private String cmd;                    // The command to run
+    private TerminalController controller; // The terminal window
+    private Process pr;                    // The current running process
+    private TextArea ta;                   // The text area to write output to
+    private TextArea symTa;                // The symbol table text area to write to
+    private BufferedWriter writer;         // Write to the program
+    private BufferedReader input;          // Read stdout of the program
+    private BufferedReader error;          // Read stderr of the program
+    private boolean debugMode;             // Run in debug mode
+    private String fullOutput;             // Full output
+    private String currentSymbolTable;     // Current symbol table
 
-    public StreamHandler(File file, boolean debugMode, boolean outputSymbolTable, int breakpoint, TerminalController controller, TextArea ta, TextArea symTa) {
+    /**
+     * Constructor building the thread, builds the command and sets all relevant variables.
+     */
+    public StreamHandler(File file, boolean debugMode, boolean outputSymbolTable,
+                         int breakpoint, TerminalController controller, TextArea ta, TextArea symTa) {
         this.debugMode = false;
         this.cmd = CommandHandler.buildCommand(file, false, true, breakpoint);
         this.controller = controller;
@@ -29,6 +35,9 @@ public class StreamHandler extends Thread {
         this.symTa = symTa;
     }
 
+    /**
+     * Start the thread. Executes the program and live captures output and writes to the text area.
+     */
     @Override
     public void run() {
         try {
@@ -59,6 +68,9 @@ public class StreamHandler extends Thread {
         }
     }
 
+    /**
+     * Kill the process.
+     */
     public void stopProcess() {
         pr.destroy();
     }

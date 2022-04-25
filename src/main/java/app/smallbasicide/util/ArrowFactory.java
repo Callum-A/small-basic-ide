@@ -1,28 +1,29 @@
 package app.smallbasicide.util;
 import java.util.function.IntFunction;
 
-import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import javafx.stage.Stage;
-
-import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.LineNumberFactory;
 import org.reactfx.value.Val;
 
+/**
+ * Class to build breakpoint indicators on line numbers.
+ */
 public class ArrowFactory implements IntFunction<Node> {
-    private final ObservableValue<Integer> shownLine;
+    private final ObservableValue<Integer> shownLine; // The line where the breakpoint is
 
+    /**
+     * Constructor taking the shown line
+     */
     public ArrowFactory(ObservableValue<Integer> shownLine) {
         this.shownLine = shownLine;
     }
 
+    /**
+     * Apply the arrow factory to a given line number displaying the breakpoint
+     * indicator if appropriate.
+     */
     @Override
     public Node apply(int lineNumber) {
         Polygon triangle = new Polygon(0.0, 0.0, 10.0, 5.0, 0.0, 10.0);
@@ -33,7 +34,6 @@ public class ArrowFactory implements IntFunction<Node> {
                 sl -> sl == lineNumber);
 
         triangle.visibleProperty().bind(visible);
-//        triangle.visibleProperty().bind(visible.conditionOnShowing(t‌​riangle));
 
         return triangle;
     }
